@@ -11,13 +11,13 @@ namespace csharpcore
         {
             var items = new List<Item>()
             {
-                new Item { Name = "foo", SellIn = 10, Quality = 10 },
-                new Item { Name = "bar", SellIn = 5, Quality = 10 }
+                new Item ("foo") { SellIn = 10, Quality = 10 },
+                new Item ("bar") { SellIn = 5, Quality = 10 }
             };
 
             var app = new GildedRose(items);
 
-            app.UpdateQuality();
+            app.UpdateItem();
 
             Assert.Equal(9, items[0].Quality);
             Assert.Equal(9, items[1].Quality);
@@ -28,13 +28,13 @@ namespace csharpcore
         {
             var items = new List<Item>()
             {
-                new Item { Name = "foo", SellIn = -5, Quality = 10 },
-                new Item { Name = "bar", SellIn = -1, Quality = 15 }
+                new Item ("foo") { SellIn = -5, Quality = 10 },
+                new Item ("bar") { SellIn = -1, Quality = 15 }
             };
 
             var app = new GildedRose(items);
 
-            app.UpdateQuality();
+            app.UpdateItem();
 
             Assert.Equal(8, items[0].Quality);
             Assert.Equal(13, items[1].Quality);
@@ -45,14 +45,61 @@ namespace csharpcore
         {
             var items = new List<Item>()
             {
-                new Item { Name = "foo", SellIn = 5, Quality = 0 },
-                new Item { Name = "bar", SellIn = 5, Quality = 0 }
+                new Item ("foo") { SellIn = 5, Quality = 0 }
             };
 
             var app = new GildedRose(items);
 
-            app.UpdateQuality();
-            Assert.True(items.All(x => x.Quality >= 0));
+            app.UpdateItem();
+
+            Assert.Equal(0, items[0].Quality);
+        }
+
+        [Fact]
+        public void UpdateQuality_Conjured_Quality_Should_Not_Be_Negative()
+        {
+            var items = new List<Item>()
+            {              
+                new Conjured { SellIn = 5, Quality = 0 }
+            };
+
+            var app = new GildedRose(items);
+
+            app.UpdateItem();
+
+            Assert.Equal(0, items[0].Quality);
+        }
+
+        [Fact]
+        public void UpdateQuality_Sulfuras_Quality_Should_Not_Be_Negative()
+        {
+            var items = new List<Item>()
+            {
+                new Sulfuras { SellIn = 5, Quality = 0 }
+            };
+
+            var app = new GildedRose(items);
+
+            app.UpdateItem();
+
+            Assert.Equal(0, items[0].Quality);
+        }
+
+        [Theory]
+        [InlineData(49)]
+        [InlineData(50)]
+        public void UpdateQuality_Item_Quality_Should_Not_Exceed_Fifty(int quality)
+        {
+            var items = new List<Item>()
+            {
+                new AgedBrie { SellIn = 5, Quality = quality }
+            };
+
+            var app = new GildedRose(items);
+
+            app.UpdateItem();
+
+            Assert.Equal(50, items[0].Quality);
         }
 
         [Fact]
@@ -60,42 +107,28 @@ namespace csharpcore
         {
             var items = new List<Item>()
             {
-                new Item { Name = "Aged Brie", SellIn = 5, Quality = 0 },
+                new AgedBrie { SellIn = 5, Quality = 0 },
             };
 
             var app = new GildedRose(items);
 
-            app.UpdateQuality();
+            app.UpdateItem();
 
             Assert.Equal(1, items[0].Quality);
         }
 
-        [Fact]
-        public void UpdateQuality_Item_Quality_Should_Not_Exceed_Fifty()
-        {
-            var items = new List<Item>()
-            {
-                new Item { Name = "Aged Brie", SellIn = 5, Quality = 50 }
-            };
-
-            var app = new GildedRose(items);
-
-            app.UpdateQuality();
-
-            Assert.Equal(50, items[0].Quality);
-        }
 
         [Fact]
         public void UpdateQuality_Given_Sulfuras_Item_Should_Not_Decrease_Quality()
         {
             var items = new List<Item>()
             {
-                new Item { Name = "Sulfuras, Hand of Ragnaros", SellIn = 5, Quality = 50 }
+                new Sulfuras { SellIn = 5, Quality = 50 }
             };
 
             var app = new GildedRose(items);
 
-            app.UpdateQuality();
+            app.UpdateItem();
 
             Assert.Equal(50, items[0].Quality);
         }
@@ -105,12 +138,12 @@ namespace csharpcore
         {
             var items = new List<Item>()
             {
-                new Item { Name = "Sulfuras, Hand of Ragnaros", SellIn = 5, Quality = 50 }
+                new Sulfuras { SellIn = 5, Quality = 50 }
             };
 
             var app = new GildedRose(items);
 
-            app.UpdateQuality();
+            app.UpdateItem();
 
             Assert.Equal(5, items[0].SellIn);
         }
@@ -123,12 +156,12 @@ namespace csharpcore
         {
             var items = new List<Item>()
             {
-                new Item { Name = "Backstage passes to a TAFKAL80ETC concert", SellIn = sellIn, Quality = 10 }
+                new BackStagePasses { SellIn = sellIn, Quality = 10 }
             };
 
             var app = new GildedRose(items);
 
-            app.UpdateQuality();
+            app.UpdateItem();
 
             Assert.Equal(expectedQuantity, items[0].Quality);
         }
@@ -138,12 +171,12 @@ namespace csharpcore
         {
             var items = new List<Item>()
             {
-                new Item { Name = "Conjured", SellIn = 5, Quality = 10 }
+                new Conjured { SellIn = 5, Quality = 10 }
             };
 
             var app = new GildedRose(items);
 
-            app.UpdateQuality();
+            app.UpdateItem();
 
             Assert.Equal(8, items[0].Quality);
         }
