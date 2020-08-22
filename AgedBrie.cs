@@ -10,7 +10,7 @@
         {
             if (CanIncreaseQuality())
             {
-                Quality++;
+                Quality+= NormalQualityAdjustment;
             }
         }
     }
