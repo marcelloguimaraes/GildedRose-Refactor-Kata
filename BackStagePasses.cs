@@ -2,6 +2,8 @@
 {
     public class BackStagePasses : Item
     {
+        private const int PassDateAdjustment = 0;
+
         public BackStagePasses() : base ("Backstage passes to a TAFKAL80ETC concert")
         {
         }
@@ -13,9 +15,9 @@
                 return;
             }
 
-            if (SellIn < 0)
+            if (SellInDateHasPassed())
             {
-                Quality = 0;
+                Quality = PassDateAdjustment;
             }
             else if (SellIn <= 5)
             {
