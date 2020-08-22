@@ -5,6 +5,8 @@ namespace csharpcore
     public class Item
     {
         protected const int MaxQualityValue = 50;
+        protected const int NormalQualityAdjustment = 1;
+        private const int PassDateQualityAdjustment = 2;
 
         public string Name { get; private set; }
         public int SellIn { get; set; }
@@ -17,20 +19,23 @@ namespace csharpcore
 
         public virtual void UpdateQuality()
         {
-            if (IsNegativeQuality())
+            if (IsNegativeQuality()) return;
+
+            if (SellInDateHasPassed())
             {
+                Quality -= PassDateQualityAdjustment;
                 return;
             }
 
-            Quality -= 1;
-
-            if (SellIn < 0)
-            {
-                Quality -= 1;
-            }
+            Quality -= NormalQualityAdjustment;
         }
 
-        public bool IsNegativeQuality()
+        protected bool SellInDateHasPassed()
+        {
+            return SellIn < 0;
+        }
+
+        protected bool IsNegativeQuality()
         {
             return Quality <= 0;
         }
@@ -40,7 +45,7 @@ namespace csharpcore
             SellIn--;
         }
 
-        public bool CanIncreaseQuality()
+        protected bool CanIncreaseQuality()
         {
             return Quality < MaxQualityValue;
         }
