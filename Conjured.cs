@@ -2,7 +2,7 @@
 {
     public class Conjured : Item
     {
-        public Conjured() : base("Conjured")
+        public Conjured() : base("Conjured mana cake")
         {
         }
 
